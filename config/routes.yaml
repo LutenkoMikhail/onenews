@@ -1,3 +1,27 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+api_news_index:
+  path: /api/v1/news
+  controller: App\Controller\NewsController::index
+  methods:    GET|HEAD
+
+api_news_show:
+  path: /api/v1/news/{id}
+  controller: App\Controller\NewsController::show
+  methods:     GET|HEAD
+  defaults:
+           id: 1
+  requirements:
+           id: '\d+'
+
+api_tags_index:
+  path: /api/v1/tags
+  controller: App\Controller\TagsController::index
+  methods: GET|HEAD
+
+api_tags_show:
+  path: /api/v1/tags/{id}
+  controller: App\Controller\TagsController::show
+  methods: GET|HEAD
+  defaults:
+    id: 1
+  requirements:
+    id: '\d+'

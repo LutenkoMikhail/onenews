@@ -1,4 +1,4 @@
 app_bundle:
-  resource: "scr/routing"
-  prefix:   /api
-  type:     directory
+  resource: '../src/routing/v1/'
+  prefix: /api/v1
+  type: directory

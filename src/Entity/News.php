@@ -47,7 +47,7 @@ class News
      */
     private $active;
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", mappedBy="news")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="news")
      * @ORM\Column(type="integer", nullable=false)
      */
     private $tags;

@@ -1,11 +1,11 @@
 api_news_index:
-  path: news
+  path: /news
   controller: App\Controller\NewsController::index
-  methods:    GET|HEAD
+  methods:    GET
 
 api_news_show:
-  path: news/{id}/show
+  path: /news/{id}/show
   controller: App\Controller\NewsController::show
-  methods:     GET|HEAD
+  methods:     GET
   requirements:
     id: '\d+'

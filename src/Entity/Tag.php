@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\TagRepository;
 use Doctrine\ORM\Mapping as ORM;
-use PhpParser\Node\Expr\Cast\Object_;
 
 /**
  * @ORM\Entity(repositoryClass=TagRepository::class)

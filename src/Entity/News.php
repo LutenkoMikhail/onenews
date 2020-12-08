@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-//use  Doctrine\ORM\Mapping\JoinTable as JoinTable;
-//use  Doctrine\ORM\Mapping\JoinColumn as JoinColumn;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\NewsRepository")

@@ -16,4 +16,11 @@ class TagController extends AbstractController
             'path' => 'src/Controller/TagController.php',
         ]);
     }
+    public function show($id): Response
+    {
+        return $this->json([
+            'message' => 'Welcome to your new controller!',
+            'id' => $id,
+        ]);
+    }
 }

@@ -16,4 +16,12 @@ class NewsController extends AbstractController
             'path' => 'src/Controller/NewsController.php',
         ]);
     }
+
+    public function show($id): Response
+    {
+        return $this->json([
+            'message' => 'Welcome to your new controller!',
+            'id' => $id,
+        ]);
+    }
 }

@@ -1,3 +1,4 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+app_bundle:
+  resource: '../src/routing/v1/'
+  prefix: /api/v1
+  type: directory

@@ -1,0 +1,11 @@
+api_tags_index:
+  path: /tags
+  controller: App\Controller\TagController::index
+  methods: GET
+
+api_tags_show:
+  path: /tags/{id}/show
+  controller: App\Controller\TagController::show
+  methods: GET
+  requirements:
+    id: '\d+'

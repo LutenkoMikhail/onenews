@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\NewsRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use PhpParser\Node\Expr\Cast\Object_;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\NewsRepository", repositoryClass=NewsRepository::class)
+ * @ORM\Entity(repositoryClass="App\Repository\NewsRepository")
  */
 class News
 {
@@ -18,17 +20,17 @@ class News
     private $id;
 
     /**
-     * @ORM\Column(type="string", nullable=false, length=100)
+     * @ORM\Column(type="string")
      */
     private $name;
 
     /**
-     * @ORM\Column(type="text", nullable=false)
+     * @ORM\Column(type="text",name="short_description")
      */
-    private $short_description;
+    private $shortDescription;
 
     /**
-     * @ORM\Column(type="text", nullable=false)
+     * @ORM\Column(type="text")
      */
     private $description;
 
@@ -47,13 +49,16 @@ class News
      */
     private $active;
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="news")
-     * @ORM\Column(type="integer", nullable=false)
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag")
+     * @JoinTable(name="news_tags",
+     *      joinColumns={@JoinColumn(name="news_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="tag_id", referencedColumnName="id")}
+     *      )
      */
     private $tags;
 
     /**
-     * @return mixed
+     * @return Object
      */
     public function getTags()
     {
@@ -61,14 +66,15 @@ class News
     }
 
     /**
-     * @param mixed $tags
+     * @param Object $tags
      */
-    public function setTags($tags): void
+    public function setTags($tags)
     {
         $this->tags = $tags;
+        return $this;
     }
     /**
-     * @return mixed
+     * @return string|null
      */
     public function getName()
     {
@@ -76,31 +82,33 @@ class News
     }
 
     /**
-     * @param mixed $name
+     * @param string $name
      */
-    public function setName($name): void
+    public function setName($name)
     {
         $this->name = $name;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getShortDescription()
     {
-        return $this->short_description;
+        return $this->shortDescription;
     }
 
     /**
-     * @param mixed $short_description
+     * @param string  $shortDescription
      */
-    public function setShortDescription($short_description): void
+    public function setShortDescription( $shortDescription)
     {
-        $this->short_description = $short_description;
+        $this->shortDescription= $shortDescription;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getDescription()
     {
@@ -108,15 +116,16 @@ class News
     }
 
     /**
-     * @param mixed $description
+     * @param string $description
      */
-    public function setDescription($description): void
+    public function setDescription($description)
     {
         $this->description = $description;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return DateTime
      */
     public function getCreatedAt()
     {
@@ -124,15 +133,16 @@ class News
     }
 
     /**
-     * @param mixed $createdAt
+     * @param DateTime $createdAt
      */
-    public function setCreatedAt($createdAt): void
+    public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return DateTime
      */
     public function getUpdatedAt()
     {
@@ -140,15 +150,16 @@ class News
     }
 
     /**
-     * @param mixed $updatedAt
+     * @param DateTime $updatedAt
      */
-    public function setUpdatedAt($updatedAt): void
+    public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
     public function getActive()
     {
@@ -156,11 +167,12 @@ class News
     }
 
     /**
-     * @param mixed $active
+     * @param bool $active
      */
-    public function setActive($active): void
+    public function setActive($active)
     {
         $this->active = $active;
+        return $this;
     }
 
     public function getId(): ?int

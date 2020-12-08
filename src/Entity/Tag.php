@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\TagRepository;
 use Doctrine\ORM\Mapping as ORM;
+use PhpParser\Node\Expr\Cast\Object_;
 
 /**
  * @ORM\Entity(repositoryClass=TagRepository::class)
@@ -18,33 +19,13 @@ class Tag
     private $id;
 
     /**
-     * @ORM\Column(type="string", nullable=false,unique=true, length=100))
+     * @ORM\Column(type="string",unique=true)
      */
     private $name;
 
-    /**
-     * @return mixed
-     */
-    public function getNews()
-    {
-        return $this->news;
-    }
 
     /**
-     * @param mixed $news
-     */
-    public function setNews($news): void
-    {
-        $this->news = $news;
-    }
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\News", mappedBy="tags")
-     * @ORM\Column(type="integer", nullable=false)
-     */
-    private $news;
-
-    /**
-     * @return mixed
+     * @return string
      */
     public function getName()
     {
@@ -52,11 +33,12 @@ class Tag
     }
 
     /**
-     * @param mixed $name
+     * @param string $name
      */
-    public function setName($name): void
+    public function setName($name)
     {
         $this->name = $name;
+        return $this;
     }
 
     public function getId(): ?int

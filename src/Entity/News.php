@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\NewsRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use PhpParser\Node\Expr\Cast\Object_;
+use  Doctrine\ORM\Mapping\JoinTable as JoinTable;
+use  Doctrine\ORM\Mapping\JoinColumn as JoinColumn;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\NewsRepository")

@@ -4,8 +4,8 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use  Doctrine\ORM\Mapping\JoinTable as JoinTable;
-use  Doctrine\ORM\Mapping\JoinColumn as JoinColumn;
+//use  Doctrine\ORM\Mapping\JoinTable as JoinTable;
+//use  Doctrine\ORM\Mapping\JoinColumn as JoinColumn;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\NewsRepository")
@@ -50,9 +50,9 @@ class News
     private $active;
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Tag")
-     * @JoinTable(name="news_tags",
-     *      joinColumns={@JoinColumn(name="news_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="tag_id", referencedColumnName="id")}
+     * @ORM\JoinTable(name="news_tags",
+     *      joinColumns={@ORM\JoinColumn(name="news_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
      *      )
      */
     private $tags;
@@ -67,6 +67,7 @@ class News
 
     /**
      * @param Object $tags
+     * @return News
      */
     public function setTags($tags)
     {
@@ -83,6 +84,7 @@ class News
 
     /**
      * @param string $name
+     * @return News
      */
     public function setName($name)
     {
@@ -100,6 +102,7 @@ class News
 
     /**
      * @param string  $shortDescription
+     * @return News
      */
     public function setShortDescription( $shortDescription)
     {
@@ -117,6 +120,7 @@ class News
 
     /**
      * @param string $description
+     * @return News
      */
     public function setDescription($description)
     {
@@ -134,6 +138,7 @@ class News
 
     /**
      * @param DateTime $createdAt
+     * @return News
      */
     public function setCreatedAt($createdAt)
     {
@@ -151,6 +156,7 @@ class News
 
     /**
      * @param DateTime $updatedAt
+     * @return News
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -168,6 +174,7 @@ class News
 
     /**
      * @param bool $active
+     * @return News
      */
     public function setActive($active)
     {
@@ -175,6 +182,9 @@ class News
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getId(): ?int
     {
         return $this->id;

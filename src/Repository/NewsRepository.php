@@ -12,5 +12,5 @@ class NewsRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, News::class);
     }
-    
+
 }

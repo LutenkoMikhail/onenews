@@ -34,6 +34,7 @@ class Tag
 
     /**
      * @param string $name
+     * @return Tag
      */
     public function setName($name)
     {
@@ -41,6 +42,9 @@ class Tag
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getId(): ?int
     {
         return $this->id;

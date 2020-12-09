@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TagRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,7 +22,44 @@ class Tag
      * @ORM\Column(type="string",unique=true)
      */
     private $name;
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\News", mappedBy="tags")
+     */
+    private $news;
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getNews(): ArrayCollection
+    {
+        return $this->news;
+    }
+
+    /**
+     * @param ArrayCollection $news
+     * @return Tag
+     */
+    public function setNews(ArrayCollection $news)
+    {
+        $this->news = $news;
+        return $this;
+    }
+
+    /**
+     * @param News $news
+     */
+    public function addNews(News $news)
+    {
+        $this->news[] = $news;
+    }
+
+    /**
+     * Tag constructor.
+     */
+    public function __construct()
+    {
+        $this->news =new ArrayCollection();
+    }
 
     /**
      * @return string
@@ -47,5 +85,10 @@ class Tag
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getIdRound()
+    {
+
     }
 }

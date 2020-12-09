@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class News
 {
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -56,6 +58,14 @@ class News
     private $tags;
 
     /**
+     * News constructor.
+     */
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
+
+    /**
      * @return Object
      */
     public function getTags()
@@ -71,6 +81,15 @@ class News
     {
         $this->tags = $tags;
         return $this;
+    }
+
+    /**
+     * @param Tag $tag
+     */
+    public function addTag(Tag $tag)
+    {
+        $tag->addNews($this);
+        $this->tags[] = $tag;
     }
     /**
      * @return string|null

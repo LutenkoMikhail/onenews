@@ -31,6 +31,6 @@ class NewsFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies()
     {
-        return array(TagFixtures::class);
+        return [TagFixtures::class];
     }
 }

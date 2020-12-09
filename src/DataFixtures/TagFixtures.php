@@ -8,13 +8,15 @@ use Doctrine\Persistence\ObjectManager;
 
 class TagFixtures extends Fixture
 {
+    public const TAG_REFERENCE = 'tag_alias_';
+    public const TAG_MAX = 5;
+
     public function load(ObjectManager $manager)
     {
-        // create 5 tags!
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 1; $i <= self::TAG_MAX; $i++) {
             $tag = new Tag();
-            $numberTag=$i+1;
-            $tag->setName($numberTag.'_TAG_'.$numberTag);
+            $tag->setName($i.'_TAG_'.$i);
+            $this->addReference(self::TAG_REFERENCE.$i, $tag);
             $manager->persist($tag);
         }
         $manager->flush();

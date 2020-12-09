@@ -49,7 +49,7 @@ class News
      */
     private $active;
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag",inversedBy="news")
      * @ORM\JoinTable(name="news_tags",
      *      joinColumns={@ORM\JoinColumn(name="news_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}

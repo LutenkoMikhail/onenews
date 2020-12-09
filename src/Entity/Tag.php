@@ -30,16 +30,16 @@ class Tag
     /**
      * @return ArrayCollection
      */
-    public function getNews(): ArrayCollection
+    public function getNews()
     {
         return $this->news;
     }
 
     /**
-     * @param ArrayCollection $news
+     * @param $news
      * @return Tag
      */
-    public function setNews(ArrayCollection $news)
+    public function setNews( $news)
     {
         $this->news = $news;
         return $this;

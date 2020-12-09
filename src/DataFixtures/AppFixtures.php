@@ -3,21 +3,12 @@
 namespace App\DataFixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class AppFixtures extends Fixture implements DependentFixtureInterface
+class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
 
-    }
-
-    public function getDependencies()
-    {
-        return array(
-            TagFixtures::class,
-            NewsFixtures::class,
-        );
     }
 }

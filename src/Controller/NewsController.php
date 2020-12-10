@@ -11,6 +11,9 @@ class NewsController extends AbstractController
 
     public function index(): Response
     {
+        $repository = $this->getDoctrine()->getRepository('App:News');
+        $news = $repository->findAll();
+
         return $this->json([
             'message' => 'Welcome to your new controller!',
             'path' => 'src/Controller/NewsController.php',

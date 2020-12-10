@@ -39,7 +39,7 @@ class Tag
      * @param $news
      * @return Tag
      */
-    public function setNews( $news)
+    public function setNews($news)
     {
         $this->news = $news;
         return $this;
@@ -58,7 +58,7 @@ class Tag
      */
     public function __construct()
     {
-        $this->news =new ArrayCollection();
+        $this->news = new ArrayCollection();
     }
 
     /**
@@ -91,4 +91,5 @@ class Tag
     {
 
     }
+
 }

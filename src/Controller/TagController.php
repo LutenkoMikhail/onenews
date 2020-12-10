@@ -2,7 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Tag;
+use App\Form\TagType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class TagController extends AbstractController
@@ -38,6 +42,31 @@ class TagController extends AbstractController
             Response::HTTP_OK,
             [],
             ['groups' => ['default']]
+        );
+    }
+
+    public function new(Request $request): Response
+    {
+        $tag = new Tag();
+        $form = $this->createForm(TagType::class, $tag);
+        $form->handleRequest($request);
+
+        if ( $form->isValid()) {
+            $tag = $form->getData();
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($tag);
+            $entityManager->flush();
+
+            return $this->json([
+                    'message' => 'Create new tag'
+                ]
+            );
+        }
+        return $this->json([
+                'error' => 'Error creating new tag'
+            ]
+
         );
     }
 }

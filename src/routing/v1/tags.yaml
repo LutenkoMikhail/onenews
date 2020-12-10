@@ -9,3 +9,7 @@ api_tags_show:
   methods: GET
   requirements:
     id: '\d+'
+api_tags_new:
+  path: /tags/new
+  controller: App\Controller\TagController::new
+  methods: POST

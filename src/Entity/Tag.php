@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\TagRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * @ORM\Entity(repositoryClass=TagRepository::class)
@@ -15,11 +17,13 @@ class Tag
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"default"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string",unique=true)
+     * @Groups({"default"})
      */
     private $name;
     /**
@@ -39,7 +43,7 @@ class Tag
      * @param $news
      * @return Tag
      */
-    public function setNews( $news)
+    public function setNews($news)
     {
         $this->news = $news;
         return $this;
@@ -58,7 +62,7 @@ class Tag
      */
     public function __construct()
     {
-        $this->news =new ArrayCollection();
+        $this->news = new ArrayCollection();
     }
 
     /**
@@ -91,4 +95,5 @@ class Tag
     {
 
     }
+
 }

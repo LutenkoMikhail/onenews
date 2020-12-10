@@ -4,23 +4,40 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class TagController extends AbstractController
 {
-
+    /**
+     * Show all tags
+     * @return Response
+     */
     public function index(): Response
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/TagController.php',
-        ]);
+        $repository = $this->getDoctrine()->getRepository('App:Tag');
+
+        return $this->json(
+            array_values($repository->findAll()),
+            Response::HTTP_OK,
+            [],
+            ['groups' => ['default']]
+        );
+
     }
+
+    /**
+     * Show one tag
+     * @param $id
+     * @return Response
+     */
     public function show($id): Response
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'id' => $id,
-        ]);
+        $repository = $this->getDoctrine()->getRepository('App:Tag');
+
+        return $this->json(
+            $repository->find($id),
+            Response::HTTP_OK,
+            [],
+            ['groups' => ['default']]
+        );
     }
 }

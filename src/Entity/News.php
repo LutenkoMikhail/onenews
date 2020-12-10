@@ -5,6 +5,8 @@ namespace App\Entity;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\NewsRepository")
@@ -16,36 +18,43 @@ class News
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"default"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string")
+     * @Groups({"default"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="text",name="short_description")
+     * @Groups({"default"})
      */
     private $shortDescription;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"default"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"default"})
      */
-    private $createdAt ;
+    private $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"default"})
      */
-    private $updatedAt ;
+    private $updatedAt;
 
     /**
      * @ORM\Column(type="boolean", options={"default":true})
+     * @Groups({"default"})
      */
     private $active;
     /**
@@ -54,6 +63,7 @@ class News
      *      joinColumns={@ORM\JoinColumn(name="news_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
      *      )
+     * @Groups({"default"})
      */
     private $tags;
 
@@ -91,6 +101,7 @@ class News
         $tag->addNews($this);
         $this->tags[] = $tag;
     }
+
     /**
      * @return string|null
      */
@@ -118,12 +129,12 @@ class News
     }
 
     /**
-     * @param string  $shortDescription
+     * @param string $shortDescription
      * @return News
      */
-    public function setShortDescription( $shortDescription)
+    public function setShortDescription($shortDescription)
     {
-        $this->shortDescription= $shortDescription;
+        $this->shortDescription = $shortDescription;
         return $this;
     }
 

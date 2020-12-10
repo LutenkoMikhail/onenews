@@ -15,6 +15,7 @@ class TagType extends AbstractType
         $builder
             ->add('name',TextType::class,[
                 'required' => true,
+                'csrf_protection' => false
             ])
         ;
     }

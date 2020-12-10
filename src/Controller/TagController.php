@@ -48,10 +48,10 @@ class TagController extends AbstractController
     public function new(Request $request): Response
     {
         $tag = new Tag();
-        $form = $this->createForm(TagType::class, $tag);
+        $form = $this->createForm(TagType::class, $tag,['method' => 'post']);
         $form->handleRequest($request);
 
-        if ( $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $tag = $form->getData();
 
             $entityManager = $this->getDoctrine()->getManager();

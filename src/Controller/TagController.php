@@ -5,9 +5,9 @@ namespace App\Controller;
 use App\Entity\Tag;
 use App\Form\TagType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class TagController extends AbstractController
 {
@@ -48,8 +48,9 @@ class TagController extends AbstractController
     public function new(Request $request): Response
     {
         $tag = new Tag();
-        $form = $this->createForm(TagType::class, $tag,['method' => 'post']);
-        $form->handleRequest($request);
+        $form = $this->createForm(TagType::class, $tag, ['method' => 'POST']);
+//        $form->handleRequest($request);
+        $form->submit($request->request->all(), false);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $tag = $form->getData();
@@ -57,7 +58,6 @@ class TagController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($tag);
             $entityManager->flush();
-
             return $this->json([
                     'message' => 'Create new tag'
                 ]

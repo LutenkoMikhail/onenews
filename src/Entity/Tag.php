@@ -25,6 +25,7 @@ class Tag
     /**
      * @ORM\Column(type="string",unique=true)
      * @Assert\NotBlank
+     * @Assert\Type("string")
      * @Groups({"default"})
      */
     private $name;

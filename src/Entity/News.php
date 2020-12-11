@@ -6,6 +6,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\NewsRepository")
@@ -24,36 +25,42 @@ class News
     /**
      * @ORM\Column(type="string")
      * @Groups({"default"})
+     * * @Assert\NotBlank
      */
     private $name;
 
     /**
      * @ORM\Column(type="text",name="short_description")
      * @Groups({"default"})
+     * @Assert\NotBlank
      */
     private $shortDescription;
 
     /**
      * @ORM\Column(type="text")
      * @Groups({"default"})
+     * @Assert\NotBlank
      */
     private $description;
 
     /**
      * @ORM\Column(type="datetime")
      * @Groups({"default"})
+     * @Assert\DateTime
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
      * @Groups({"default"})
+     * @Assert\DateTime
      */
     private $updatedAt;
 
     /**
      * @ORM\Column(type="boolean", options={"default":true})
      * @Groups({"default"})
+     * @Assert\IsTrue
      */
     private $active;
     /**

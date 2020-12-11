@@ -9,7 +9,21 @@ api_tags_show:
   methods: GET
   requirements:
     id: '\d+'
+
 api_tags_new:
   path: /tags/new
   controller: App\Controller\TagController::new
   methods: POST
+
+api_tags_delete:
+  path: /tags/{id}/delete
+  controller: App\Controller\TagController::delete
+  methods: POST
+  requirements:
+    id: '\d+'
+api_tags_update:
+  path: /tags/{id}/update
+  controller: App\Controller\TagController::update
+  methods: POST
+  requirements:
+    id: '\d+'

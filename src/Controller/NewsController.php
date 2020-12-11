@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\News;
+use App\Form\NewsType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -40,4 +43,5 @@ class NewsController extends AbstractController
             ['groups' => ['default']]
         );
     }
+
 }

@@ -44,4 +44,57 @@ class NewsController extends AbstractController
         );
     }
 
+    public function new(Request $request): Response
+    {
+        $tag = new News();
+        $form = $this->createForm(NewsType::class, $tag, ['method' => 'POST']);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $tag = $form->getData();
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($tag);
+            $entityManager->flush();
+
+            return $this->json(
+                $tag,
+                Response::HTTP_CREATED,
+                [],
+                ['groups' => ['default']]
+            );
+        }
+        return $this->json([
+                'error' => 'Wrong request'
+            ]
+
+        );
+    }
+    /**
+     * Deleting a news
+     * @param $id
+     * @return Response
+     */
+    public function delete($id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $tag = $entityManager->getRepository(News::class)->find($id);
+
+        if (!$tag) {
+            return $this->json([
+                    'error' => 'Wrong request'
+                ]
+
+            );
+        }
+        $entityManager->remove($tag);
+        $entityManager->flush();
+        return $this->json(
+            $tag,
+            Response::HTTP_OK,
+            [],
+            ['groups' => ['default']]
+        );
+    }
+
 }

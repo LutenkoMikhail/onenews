@@ -64,7 +64,7 @@ class News
      */
     private $active;
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag",inversedBy="news")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag",inversedBy="news", cascade={"persist"})
      * @ORM\JoinTable(name="news_tags",
      *      joinColumns={@ORM\JoinColumn(name="news_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
@@ -106,6 +106,14 @@ class News
     {
         $tag->addNews($this);
         $this->tags[] = $tag;
+    }
+
+    /**
+     * @param Tag $tag
+     */
+    public function removeTag(Tag $tag)
+    {
+        $this->tags->removeElement($tag);
     }
 
     /**
@@ -223,4 +231,5 @@ class News
     {
         return $this->id;
     }
+
 }

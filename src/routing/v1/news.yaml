@@ -9,3 +9,15 @@ api_news_show:
   methods:     GET
   requirements:
     id: '\d+'
+
+api_news_new:
+  path: /news/new
+  controller: App\Controller\NewsController::new
+  methods: POST
+
+api_news_delete:
+  path: /news/{id}/delete
+  controller: App\Controller\NewsController::delete
+  methods: DELETE
+  requirements:
+    id: '\d+'

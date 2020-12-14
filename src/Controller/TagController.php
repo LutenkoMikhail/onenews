@@ -87,11 +87,7 @@ class TagController extends AbstractController
         $tag = $entityManager->getRepository(Tag::class)->find($id);
 
         if (!$tag) {
-            return $this->json([
-                    'error' => 'Wrong request'
-                ]
-
-            );
+            $this->createNotFoundException();
         }
         $entityManager->remove($tag);
         $entityManager->flush();
@@ -114,11 +110,14 @@ class TagController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $tag = $entityManager->getRepository(Tag::class)->find($id);
 
+        if (!$tag) {
+            $this->createNotFoundException();
+        }
 
         $form = $this->createForm(TagType::class, $tag, ['method' => 'POST']);
         $form->handleRequest($request);
 
-        if ($tag && $form->isSubmitted() && $form->isValid()) {
+        if ( $form->isSubmitted() && $form->isValid()) {
             $tag = $form->getData();
             $entityManager->persist($tag);
             $entityManager->flush();
@@ -129,9 +128,5 @@ class TagController extends AbstractController
                 ['groups' => ['default']]
             );
         }
-        return $this->json([
-                'error' => 'Wrong request'
-            ]
-        );
     }
 }

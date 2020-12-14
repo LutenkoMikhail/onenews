@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\News;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,7 +19,12 @@ class NewsType extends AbstractType
             ->add('createdAt')
             ->add('updatedAt')
             ->add('active')
-            ->add('tags');
+            ->add('tags', CollectionType::class, [
+                'entry_type' => TagType::class,
+                'by_reference' => false,
+                'allow_delete' => true,
+                'allow_add' => true,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

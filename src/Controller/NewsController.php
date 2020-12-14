@@ -46,19 +46,19 @@ class NewsController extends AbstractController
 
     public function new(Request $request): Response
     {
-        $tag = new News();
-        $form = $this->createForm(NewsType::class, $tag, ['method' => 'POST']);
+        $news = new News();
+        $form = $this->createForm(NewsType::class, $news, ['method' => 'POST']);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $tag = $form->getData();
+            $news = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($tag);
+            $entityManager->persist($news);
             $entityManager->flush();
 
             return $this->json(
-                $tag,
+                $news,
                 Response::HTTP_CREATED,
                 [],
                 ['groups' => ['default']]
@@ -78,19 +78,15 @@ class NewsController extends AbstractController
     public function delete($id): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $tag = $entityManager->getRepository(News::class)->find($id);
+        $news = $entityManager->getRepository(News::class)->find($id);
 
-        if (!$tag) {
-            return $this->json([
-                    'error' => 'Wrong request'
-                ]
-
-            );
+        if (!$news) {
+            $this->createNotFoundException();
         }
-        $entityManager->remove($tag);
+        $entityManager->remove($news);
         $entityManager->flush();
         return $this->json(
-            $tag,
+            $news,
             Response::HTTP_OK,
             [],
             ['groups' => ['default']]

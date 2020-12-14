@@ -5,11 +5,14 @@ namespace App\Entity;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
+use Doctrine\ORM\Mapping\PrePersist;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\NewsRepository")
+ * @HasLifecycleCallbacks
  */
 class News
 {
@@ -44,14 +47,21 @@ class News
     private $description;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime",name="created_at")
      * @Groups({"default"})
      * @Assert\DateTime
      */
     private $createdAt;
 
+    /** @PrePersist */
+    public function doStuffOnPrePersist()
+    {
+        $this->createdAt = date('Y-m-d H:i:s');
+        $this->updatedAt = date('Y-m-d H:i:s');
+    }
+
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime",name="updated_at")
      * @Groups({"default"})
      * @Assert\DateTime
      */

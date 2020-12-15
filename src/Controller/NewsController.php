@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\News;
 use App\Form\NewsType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,6 +45,11 @@ class NewsController extends AbstractController
         );
     }
 
+    /**
+     * Created a new News
+     * @param Request $request
+     * @return Response
+     */
     public function new(Request $request): Response
     {
         $news = new News();
@@ -64,12 +70,55 @@ class NewsController extends AbstractController
                 ['groups' => ['default']]
             );
         }
-        return $this->json([
-                'error' => 'Wrong request'
-            ]
-
-        );
+        $this->createNotFoundException();
     }
+
+    /**
+     * News update
+     * @param Request $request
+     * @param $id
+     * @return Response
+     */
+    public function update(Request $request, $id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $news = $entityManager->getRepository(News::class)->find($id);
+
+        if (!$news) {
+            $this->createNotFoundException();
+        }
+        $originalTags = new ArrayCollection();
+
+        foreach ($news->getTags() as $tag) {
+            $originalTags->add($tag);
+        }
+
+        $form = $this->createForm(NewsType::class, $news, ['method' => 'POST']);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            foreach ($originalTags as $tag) {
+                if (false === $news->getTags()->contains($tag)) {
+                    $tag->getNews()->removeElement($news);
+                    $entityManager->persist($tag);
+                }
+            }
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($news);
+            $entityManager->flush();
+
+            return $this->json(
+                $news,
+                Response::HTTP_CREATED,
+                [],
+                ['groups' => ['default']]
+            );
+        }
+
+    }
+
     /**
      * Deleting a news
      * @param $id

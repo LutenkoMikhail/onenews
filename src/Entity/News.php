@@ -5,7 +5,6 @@ namespace App\Entity;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\PrePersist;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -52,15 +51,9 @@ class News
      */
     private $createdAt;
 
-    /** @PrePersist */
-    public function doStuffOnPrePersist()
-    {
-        $this->createdAt = new \DateTime('now');
-        $this->updatedAt = new \DateTime('now');
-    }
 
     /**
-     * @ORM\Column(type="datetime",name="updated_at")
+     * @ORM\Column(type="datetime",name="updated_at",nullable=true)
      * @Groups({"default"})
      * @Assert\DateTime
      */
@@ -241,4 +234,16 @@ class News
         return $this->id;
     }
 
+    /** @ORM\PrePersist */
+    public function PrePersist()
+    {
+        $this->createdAt = new \DateTime('now');
+
+    }
+
+    /** @ORM\PreUpdate */
+    public function PreUpdate()
+    {
+        $this->updatedAt = new \DateTime('now');
+    }
 }

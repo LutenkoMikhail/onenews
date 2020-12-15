@@ -18,6 +18,13 @@ api_news_new:
 api_news_delete:
   path: /news/{id}/delete
   controller: App\Controller\NewsController::delete
-  methods: DELETE
+  methods: POST
   requirements:
     id: '\d+'
+api_news_update:
+  path: /news/{id}/update
+  controller: App\Controller\NewsController::update
+  methods: POST
+  requirements:
+    id: '\d+'
+

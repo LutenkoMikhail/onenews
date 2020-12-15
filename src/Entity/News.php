@@ -245,10 +245,9 @@ class News
     }
 
     /**
-     * @param PreUpdateEventArgs $event
      * @ORM\PreUpdate
      */
-    public function preUpdate(PreUpdateEventArgs $event)
+    public function preUpdate()
     {
         $this->updatedAt = new \DateTime('now');
     }

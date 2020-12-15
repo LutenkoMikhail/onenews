@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\News;
+use App\Form\NewsType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -40,4 +43,98 @@ class NewsController extends AbstractController
             ['groups' => ['default']]
         );
     }
+
+    /**
+     * Created a new News
+     * @param Request $request
+     * @return Response
+     */
+    public function new(Request $request): Response
+    {
+        $news = new News();
+        $form = $this->createForm(NewsType::class, $news, ['method' => Request::METHOD_POST]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $news = $form->getData();
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($news);
+            $entityManager->flush();
+
+            return $this->json(
+                $news,
+                Response::HTTP_CREATED,
+                [],
+                ['groups' => ['default']]
+            );
+        }
+        return $this->json([
+                'error' => 'Wrong request'
+            ]
+        );
+    }
+
+    /**
+     * News update
+     * @param Request $request
+     * @param $id
+     * @return Response
+     */
+    public function update(Request $request, $id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $news = $entityManager->getRepository(News::class)->find($id);
+
+        if (!$news) {
+            $this->createNotFoundException();
+        }
+
+        $form = $this->createForm(NewsType::class, $news, ['method' => Request::METHOD_PATCH]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($news);
+            $entityManager->flush();
+
+            return $this->json(
+                $news,
+                Response::HTTP_CREATED,
+                [],
+                ['groups' => ['default']]
+            );
+        }
+
+        return $this->json([
+                'error' => 'Wrong request'
+            ]
+        );
+    }
+
+    /**
+     * Deleting a news
+     * @param $id
+     * @return Response
+     */
+    public function delete($id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $news = $entityManager->getRepository(News::class)->find($id);
+
+        if (!$news) {
+            $this->createNotFoundException();
+        }
+        $entityManager->remove($news);
+        $entityManager->flush();
+        return $this->json(
+            null,
+            Response::HTTP_NO_CONTENT,
+            [],
+            ['groups' => ['default']]
+        );
+    }
 }
+

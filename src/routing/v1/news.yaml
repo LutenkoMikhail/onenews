@@ -4,8 +4,27 @@ api_news_index:
   methods:    GET
 
 api_news_show:
-  path: /news/{id}/show
+  path: /news/{id}
   controller: App\Controller\NewsController::show
   methods:     GET
   requirements:
     id: '\d+'
+
+api_news_new:
+  path: /news
+  controller: App\Controller\NewsController::new
+  methods: POST
+
+api_news_delete:
+  path: /news/{id}
+  controller: App\Controller\NewsController::delete
+  methods: DELETE
+  requirements:
+    id: '\d+'
+api_news_update:
+  path: /news/{id}
+  controller: App\Controller\NewsController::update
+  methods: PATCH
+  requirements:
+    id: '\d+'
+

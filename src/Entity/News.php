@@ -6,10 +6,11 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\NewsRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class News
 {
@@ -25,40 +26,47 @@ class News
     /**
      * @ORM\Column(type="string")
      * @Groups({"default"})
+     * @Assert\NotBlank
      */
     private $name;
 
     /**
      * @ORM\Column(type="text",name="short_description")
      * @Groups({"default"})
+     * @Assert\NotBlank
      */
     private $shortDescription;
 
     /**
      * @ORM\Column(type="text")
      * @Groups({"default"})
+     * @Assert\NotBlank
      */
     private $description;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime",name="created_at")
      * @Groups({"default"})
+     *
      */
     private $createdAt;
 
+
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime",name="updated_at",nullable=true)
      * @Groups({"default"})
+     *
      */
     private $updatedAt;
 
     /**
      * @ORM\Column(type="boolean", options={"default":true})
      * @Groups({"default"})
+     * @Assert\IsTrue
      */
     private $active;
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag",inversedBy="news")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag",inversedBy="news", cascade={"persist"})
      * @ORM\JoinTable(name="news_tags",
      *      joinColumns={@ORM\JoinColumn(name="news_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
@@ -100,6 +108,14 @@ class News
     {
         $tag->addNews($this);
         $this->tags[] = $tag;
+    }
+
+    /**
+     * @param Tag $tag
+     */
+    public function removeTag(Tag $tag)
+    {
+        $this->tags->removeElement($tag);
     }
 
     /**
@@ -216,5 +232,22 @@ class News
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        $this->createdAt = new \DateTime('now');
+
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpdate()
+    {
+        $this->updatedAt = new \DateTime('now');
     }
 }

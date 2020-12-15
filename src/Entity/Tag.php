@@ -5,11 +5,14 @@ namespace App\Entity;
 use App\Repository\TagRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass=TagRepository::class)
+ * @UniqueEntity("name")
  */
 class Tag
 {
@@ -23,6 +26,8 @@ class Tag
 
     /**
      * @ORM\Column(type="string",unique=true)
+     * @Assert\NotBlank
+     * @Assert\Type("string")
      * @Groups({"default"})
      */
     private $name;
@@ -89,11 +94,6 @@ class Tag
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getIdRound()
-    {
-
     }
 
 }

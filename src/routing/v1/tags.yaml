@@ -4,26 +4,26 @@ api_tags_index:
   methods: GET
 
 api_tags_show:
-  path: /tags/{id}/show
+  path: /tags/{id}
   controller: App\Controller\TagController::show
   methods: GET
   requirements:
     id: '\d+'
 
 api_tags_new:
-  path: /tags/new
+  path: /tags
   controller: App\Controller\TagController::new
   methods: POST
 
 api_tags_delete:
-  path: /tags/{id}/delete
+  path: /tags/{id}
   controller: App\Controller\TagController::delete
-  methods: POST
+  methods: DELETE
   requirements:
     id: '\d+'
 api_tags_update:
-  path: /tags/{id}/update
+  path: /tags/{id}
   controller: App\Controller\TagController::update
-  methods: POST
+  methods: PATCH
   requirements:
     id: '\d+'

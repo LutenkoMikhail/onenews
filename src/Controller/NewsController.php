@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\News;
 use App\Form\NewsType;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,7 +69,11 @@ class NewsController extends AbstractController
                 ['groups' => ['default']]
             );
         }
-        $this->createNotFoundException();
+        return $this->json([
+                'error' => 'Wrong request'
+            ]
+
+        );
     }
 
     /**
@@ -87,24 +90,13 @@ class NewsController extends AbstractController
         if (!$news) {
             $this->createNotFoundException();
         }
-        $originalTags = new ArrayCollection();
 
-        foreach ($news->getTags() as $tag) {
-            $originalTags->add($tag);
-        }
-
-        $form = $this->createForm(NewsType::class, $news, ['method' => 'POST']);
+        $form = $this->createForm(NewsType::class, $news, ['method' => Request::METHOD_PATCH]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            foreach ($originalTags as $tag) {
-                if (false === $news->getTags()->contains($tag)) {
-                    $tag->getNews()->removeElement($news);
-                    $entityManager->persist($tag);
-                }
-            }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($news);
             $entityManager->flush();
@@ -117,6 +109,11 @@ class NewsController extends AbstractController
             );
         }
 
+        return $this->json([
+                'error' => 'Wrong request'
+            ]
+
+        );
     }
 
     /**

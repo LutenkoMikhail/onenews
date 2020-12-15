@@ -27,7 +27,7 @@ class News
     /**
      * @ORM\Column(type="string")
      * @Groups({"default"})
-     * * @Assert\NotBlank
+     * @Assert\NotBlank
      */
     private $name;
 
@@ -48,7 +48,7 @@ class News
     /**
      * @ORM\Column(type="datetime",name="created_at")
      * @Groups({"default"})
-     * @Assert\DateTime
+     *
      */
     private $createdAt;
 
@@ -56,7 +56,7 @@ class News
     /**
      * @ORM\Column(type="datetime",name="updated_at",nullable=true)
      * @Groups({"default"})
-     * @Assert\DateTime
+     *
      */
     private $updatedAt;
 
@@ -238,7 +238,7 @@ class News
     /**
      * @ORM\PrePersist
      */
-    public function PrePersist()
+    public function prePersist()
     {
         $this->createdAt = new \DateTime('now');
 
@@ -248,9 +248,8 @@ class News
      * @param PreUpdateEventArgs $event
      * @ORM\PreUpdate
      */
-    public function PreUpdate(PreUpdateEventArgs $event)
+    public function preUpdate(PreUpdateEventArgs $event)
     {
-        $this->createdAt = $event->getOldValue('createdAt');
         $this->updatedAt = new \DateTime('now');
     }
 }

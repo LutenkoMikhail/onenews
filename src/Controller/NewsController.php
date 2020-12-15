@@ -52,7 +52,7 @@ class NewsController extends AbstractController
     public function new(Request $request): Response
     {
         $news = new News();
-        $form = $this->createForm(NewsType::class, $news, ['method' => 'POST']);
+        $form = $this->createForm(NewsType::class, $news, ['method' => Request::METHOD_POST]);
 
         $form->handleRequest($request);
 
@@ -72,7 +72,6 @@ class NewsController extends AbstractController
         return $this->json([
                 'error' => 'Wrong request'
             ]
-
         );
     }
 
@@ -112,7 +111,6 @@ class NewsController extends AbstractController
         return $this->json([
                 'error' => 'Wrong request'
             ]
-
         );
     }
 
@@ -132,11 +130,11 @@ class NewsController extends AbstractController
         $entityManager->remove($news);
         $entityManager->flush();
         return $this->json(
-            $news,
-            Response::HTTP_OK,
+            null,
+            Response::HTTP_NO_CONTENT,
             [],
             ['groups' => ['default']]
         );
     }
-
 }
+

@@ -52,7 +52,7 @@ class TagController extends AbstractController
     public function new(Request $request): Response
     {
         $tag = new Tag();
-        $form = $this->createForm(TagType::class, $tag, ['method' => 'POST']);
+        $form = $this->createForm(TagType::class, $tag, ['method' => Request::METHOD_POST]);
 
         $form->handleRequest($request);
 
@@ -92,8 +92,8 @@ class TagController extends AbstractController
         $entityManager->remove($tag);
         $entityManager->flush();
         return $this->json(
-            $tag,
-            Response::HTTP_OK,
+            null,
+            Response::HTTP_NO_CONTENT,
             [],
             ['groups' => ['default']]
         );
@@ -114,10 +114,10 @@ class TagController extends AbstractController
             $this->createNotFoundException();
         }
 
-        $form = $this->createForm(TagType::class, $tag, ['method' => 'POST']);
+        $form = $this->createForm(TagType::class, $tag, ['method' => Request::METHOD_PATCH]);
         $form->handleRequest($request);
 
-        if ( $form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $tag = $form->getData();
             $entityManager->persist($tag);
             $entityManager->flush();
@@ -128,5 +128,10 @@ class TagController extends AbstractController
                 ['groups' => ['default']]
             );
         }
+        return $this->json([
+                'error' => 'Wrong request'
+            ]
+        );
     }
 }
+

@@ -95,10 +95,5 @@ class Tag
     {
         return $this->id;
     }
-
-    public function getIdRound()
-    {
-
-    }
-
+    
 }

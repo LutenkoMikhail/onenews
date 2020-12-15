@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -234,16 +235,22 @@ class News
         return $this->id;
     }
 
-    /** @ORM\PrePersist */
+    /**
+     * @ORM\PrePersist
+     */
     public function PrePersist()
     {
         $this->createdAt = new \DateTime('now');
 
     }
 
-    /** @ORM\PreUpdate */
-    public function PreUpdate()
+    /**
+     * @param PreUpdateEventArgs $event
+     * @ORM\PreUpdate
+     */
+    public function PreUpdate(PreUpdateEventArgs $event)
     {
+        $this->createdAt = $event->getOldValue('createdAt');
         $this->updatedAt = new \DateTime('now');
     }
 }

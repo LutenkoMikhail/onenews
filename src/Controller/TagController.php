@@ -4,13 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Tag;
 use App\Form\TagType;
-use App\Serializer\Normalizer\SymfonyFormErrorNormalizer;
-use App\Util\ErrorFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Serializer;
 
 class TagController extends AbstractController
 {
@@ -28,7 +24,6 @@ class TagController extends AbstractController
             [],
             ['groups' => ['default']]
         );
-
     }
 
     /**
@@ -39,12 +34,20 @@ class TagController extends AbstractController
     public function show($id): Response
     {
         $repository = $this->getDoctrine()->getRepository('App:Tag');
-
+        $tag = $repository->find($id);
+        if ($tag) {
+            return $this->json(
+                $tag,
+                Response::HTTP_OK,
+                [],
+                ['groups' => ['default']]
+            );
+        }
         return $this->json(
-            $repository->find($id),
-            Response::HTTP_OK,
+            null,
+            Response::HTTP_NOT_FOUND,
             [],
-            ['groups' => ['default']]
+            []
         );
     }
 
@@ -73,15 +76,8 @@ class TagController extends AbstractController
                 ['groups' => ['default']]
             );
         }
-
-        $encoders = [ new JsonEncoder()];
-        $normalizers = [new SymfonyFormErrorNormalizer(new ErrorFactory())];
-        $serializer = new Serializer($normalizers, $encoders);
-
-        $jsonContent =json_decode( $serializer->serialize($form, 'json'), true);
-
         return $this->json(
-            $jsonContent,
+            $form,
             Response::HTTP_UNPROCESSABLE_ENTITY,
             [],
             []
@@ -98,16 +94,21 @@ class TagController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $tag = $entityManager->getRepository(Tag::class)->find($id);
 
-        if (!$tag) {
-            $this->createNotFoundException();
+        if ($tag) {
+            $entityManager->remove($tag);
+            $entityManager->flush();
+            return $this->json(
+                null,
+                Response::HTTP_NO_CONTENT,
+                [],
+                ['groups' => ['default']]
+            );
         }
-        $entityManager->remove($tag);
-        $entityManager->flush();
         return $this->json(
             null,
-            Response::HTTP_NO_CONTENT,
+            Response::HTTP_NOT_FOUND,
             [],
-            ['groups' => ['default']]
+            []
         );
     }
 
@@ -123,7 +124,12 @@ class TagController extends AbstractController
         $tag = $entityManager->getRepository(Tag::class)->find($id);
 
         if (!$tag) {
-            $this->createNotFoundException();
+            return $this->json(
+                null,
+                Response::HTTP_NOT_FOUND,
+                [],
+                []
+            );
         }
 
         $form = $this->createForm(TagType::class, $tag, ['method' => Request::METHOD_PATCH]);
@@ -140,9 +146,11 @@ class TagController extends AbstractController
                 ['groups' => ['default']]
             );
         }
-        return $this->json([
-                'error' => 'Wrong request'
-            ]
+        return $this->json(
+            $form,
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            [],
+            []
         );
     }
 }

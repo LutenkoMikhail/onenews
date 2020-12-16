@@ -35,13 +35,22 @@ class NewsController extends AbstractController
     public function show($id): Response
     {
         $repository = $this->getDoctrine()->getRepository('App:News');
-
+        $news = $repository->find($id);
+        if ($news) {
+            return $this->json(
+                $news,
+                Response::HTTP_OK,
+                [],
+                ['groups' => ['default']]
+            );
+        }
         return $this->json(
-            $repository->find($id),
-            Response::HTTP_OK,
+            null,
+            Response::HTTP_NOT_FOUND,
             [],
-            ['groups' => ['default']]
+            []
         );
+
     }
 
     /**
@@ -69,9 +78,11 @@ class NewsController extends AbstractController
                 ['groups' => ['default']]
             );
         }
-        return $this->json([
-                'error' => 'Wrong request'
-            ]
+        return $this->json(
+            $form,
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            [],
+            []
         );
     }
 
@@ -87,7 +98,12 @@ class NewsController extends AbstractController
         $news = $entityManager->getRepository(News::class)->find($id);
 
         if (!$news) {
-            $this->createNotFoundException();
+            return $this->json(
+                null,
+                Response::HTTP_NOT_FOUND,
+                [],
+                []
+            );
         }
 
         $form = $this->createForm(NewsType::class, $news, ['method' => Request::METHOD_PATCH]);
@@ -102,15 +118,17 @@ class NewsController extends AbstractController
 
             return $this->json(
                 $news,
-                Response::HTTP_CREATED,
+                Response::HTTP_OK,
                 [],
                 ['groups' => ['default']]
             );
         }
 
-        return $this->json([
-                'error' => 'Wrong request'
-            ]
+        return $this->json(
+            $form,
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            [],
+            []
         );
     }
 
@@ -124,16 +142,21 @@ class NewsController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $news = $entityManager->getRepository(News::class)->find($id);
 
-        if (!$news) {
-            $this->createNotFoundException();
+        if ($news) {
+            $entityManager->remove($news);
+            $entityManager->flush();
+            return $this->json(
+                null,
+                Response::HTTP_NO_CONTENT,
+                [],
+                ['groups' => ['default']]
+            );
         }
-        $entityManager->remove($news);
-        $entityManager->flush();
         return $this->json(
             null,
-            Response::HTTP_NO_CONTENT,
+            Response::HTTP_NOT_FOUND,
             [],
-            ['groups' => ['default']]
+            []
         );
     }
 }

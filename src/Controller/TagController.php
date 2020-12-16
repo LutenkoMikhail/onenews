@@ -4,9 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Tag;
 use App\Form\TagType;
+use App\Serializer\Normalizer\SymfonyFormErrorNormalizer;
+use App\Util\ErrorFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Serializer;
 
 class TagController extends AbstractController
 {
@@ -69,10 +73,18 @@ class TagController extends AbstractController
                 ['groups' => ['default']]
             );
         }
-        return $this->json([
-                'error' => 'Wrong request'
-            ]
 
+        $encoders = [ new JsonEncoder()];
+        $normalizers = [new SymfonyFormErrorNormalizer(new ErrorFactory())];
+        $serializer = new Serializer($normalizers, $encoders);
+
+        $jsonContent =json_decode( $serializer->serialize($form, 'json'), true);
+
+        return $this->json(
+            $jsonContent,
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            [],
+            []
         );
     }
 

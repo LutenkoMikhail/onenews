@@ -36,21 +36,15 @@ class NewsController extends AbstractController
     {
         $repository = $this->getDoctrine()->getRepository('App:News');
         $news = $repository->find($id);
-        if ($news) {
-            return $this->json(
-                $news,
-                Response::HTTP_OK,
-                [],
-                ['groups' => ['default']]
-            );
+        if (!$news) {
+            throw $this->createNotFoundException();
         }
         return $this->json(
-            null,
-            Response::HTTP_NOT_FOUND,
+            $news,
+            Response::HTTP_OK,
             [],
-            []
+            ['groups' => ['default']]
         );
-
     }
 
     /**
@@ -98,12 +92,7 @@ class NewsController extends AbstractController
         $news = $entityManager->getRepository(News::class)->find($id);
 
         if (!$news) {
-            return $this->json(
-                null,
-                Response::HTTP_NOT_FOUND,
-                [],
-                []
-            );
+            throw $this->createNotFoundException();
         }
 
         $form = $this->createForm(NewsType::class, $news, ['method' => Request::METHOD_PATCH]);
@@ -142,21 +131,16 @@ class NewsController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $news = $entityManager->getRepository(News::class)->find($id);
 
-        if ($news) {
-            $entityManager->remove($news);
-            $entityManager->flush();
-            return $this->json(
-                null,
-                Response::HTTP_NO_CONTENT,
-                [],
-                ['groups' => ['default']]
-            );
+        if (!$news) {
+            throw $this->createNotFoundException();
         }
+        $entityManager->remove($news);
+        $entityManager->flush();
         return $this->json(
             null,
-            Response::HTTP_NOT_FOUND,
+            Response::HTTP_NO_CONTENT,
             [],
-            []
+            ['groups' => ['default']]
         );
     }
 }

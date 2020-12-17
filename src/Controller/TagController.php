@@ -35,19 +35,14 @@ class TagController extends AbstractController
     {
         $repository = $this->getDoctrine()->getRepository('App:Tag');
         $tag = $repository->find($id);
-        if ($tag) {
-            return $this->json(
-                $tag,
-                Response::HTTP_OK,
-                [],
-                ['groups' => ['default']]
-            );
+        if (!$tag) {
+            throw $this->createNotFoundException();
         }
         return $this->json(
-            null,
-            Response::HTTP_NOT_FOUND,
+            $tag,
+            Response::HTTP_OK,
             [],
-            []
+            ['groups' => ['default']]
         );
     }
 
@@ -94,21 +89,16 @@ class TagController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $tag = $entityManager->getRepository(Tag::class)->find($id);
 
-        if ($tag) {
-            $entityManager->remove($tag);
-            $entityManager->flush();
-            return $this->json(
-                null,
-                Response::HTTP_NO_CONTENT,
-                [],
-                ['groups' => ['default']]
-            );
+        if (!$tag) {
+            throw $this->createNotFoundException();
         }
+        $entityManager->remove($tag);
+        $entityManager->flush();
         return $this->json(
             null,
-            Response::HTTP_NOT_FOUND,
+            Response::HTTP_NO_CONTENT,
             [],
-            []
+            ['groups' => ['default']]
         );
     }
 
@@ -124,12 +114,7 @@ class TagController extends AbstractController
         $tag = $entityManager->getRepository(Tag::class)->find($id);
 
         if (!$tag) {
-            return $this->json(
-                null,
-                Response::HTTP_NOT_FOUND,
-                [],
-                []
-            );
+            throw $this->createNotFoundException();
         }
 
         $form = $this->createForm(TagType::class, $tag, ['method' => Request::METHOD_PATCH]);

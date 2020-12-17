@@ -24,7 +24,6 @@ class TagController extends AbstractController
             [],
             ['groups' => ['default']]
         );
-
     }
 
     /**
@@ -35,9 +34,12 @@ class TagController extends AbstractController
     public function show($id): Response
     {
         $repository = $this->getDoctrine()->getRepository('App:Tag');
-
+        $tag = $repository->find($id);
+        if (!$tag) {
+            throw $this->createNotFoundException();
+        }
         return $this->json(
-            $repository->find($id),
+            $tag,
             Response::HTTP_OK,
             [],
             ['groups' => ['default']]
@@ -69,10 +71,11 @@ class TagController extends AbstractController
                 ['groups' => ['default']]
             );
         }
-        return $this->json([
-                'error' => 'Wrong request'
-            ]
-
+        return $this->json(
+            $form,
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            [],
+            []
         );
     }
 
@@ -87,7 +90,7 @@ class TagController extends AbstractController
         $tag = $entityManager->getRepository(Tag::class)->find($id);
 
         if (!$tag) {
-            $this->createNotFoundException();
+            throw $this->createNotFoundException();
         }
         $entityManager->remove($tag);
         $entityManager->flush();
@@ -111,7 +114,7 @@ class TagController extends AbstractController
         $tag = $entityManager->getRepository(Tag::class)->find($id);
 
         if (!$tag) {
-            $this->createNotFoundException();
+            throw $this->createNotFoundException();
         }
 
         $form = $this->createForm(TagType::class, $tag, ['method' => Request::METHOD_PATCH]);
@@ -128,9 +131,11 @@ class TagController extends AbstractController
                 ['groups' => ['default']]
             );
         }
-        return $this->json([
-                'error' => 'Wrong request'
-            ]
+        return $this->json(
+            $form,
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            [],
+            []
         );
     }
 }

@@ -35,9 +35,12 @@ class NewsController extends AbstractController
     public function show($id): Response
     {
         $repository = $this->getDoctrine()->getRepository('App:News');
-
+        $news = $repository->find($id);
+        if (!$news) {
+            throw $this->createNotFoundException();
+        }
         return $this->json(
-            $repository->find($id),
+            $news,
             Response::HTTP_OK,
             [],
             ['groups' => ['default']]
@@ -69,9 +72,11 @@ class NewsController extends AbstractController
                 ['groups' => ['default']]
             );
         }
-        return $this->json([
-                'error' => 'Wrong request'
-            ]
+        return $this->json(
+            $form,
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            [],
+            []
         );
     }
 
@@ -87,7 +92,7 @@ class NewsController extends AbstractController
         $news = $entityManager->getRepository(News::class)->find($id);
 
         if (!$news) {
-            $this->createNotFoundException();
+            throw $this->createNotFoundException();
         }
 
         $form = $this->createForm(NewsType::class, $news, ['method' => Request::METHOD_PATCH]);
@@ -102,15 +107,17 @@ class NewsController extends AbstractController
 
             return $this->json(
                 $news,
-                Response::HTTP_CREATED,
+                Response::HTTP_OK,
                 [],
                 ['groups' => ['default']]
             );
         }
 
-        return $this->json([
-                'error' => 'Wrong request'
-            ]
+        return $this->json(
+            $form,
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            [],
+            []
         );
     }
 
@@ -125,7 +132,7 @@ class NewsController extends AbstractController
         $news = $entityManager->getRepository(News::class)->find($id);
 
         if (!$news) {
-            $this->createNotFoundException();
+            throw $this->createNotFoundException();
         }
         $entityManager->remove($news);
         $entityManager->flush();

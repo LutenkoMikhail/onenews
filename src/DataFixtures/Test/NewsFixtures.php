@@ -11,11 +11,12 @@ use Doctrine\Persistence\ObjectManager;
 
 class NewsFixtures extends Fixture implements FixtureGroupInterface,DependentFixtureInterface
 {
+    public const NEWS_MAX = 3;
 
     public function load(ObjectManager $manager)
     {
 
-        for ($i = 1; $i <= 3; $i++) {
+        for ($i = 1; $i <= self::NEWS_MAX; $i++) {
             $news = new News();
             $news->setName('News number__' . $i);
             $news->setDescription('News description__' . $i);

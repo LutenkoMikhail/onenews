@@ -1,26 +1,30 @@
 <?php
 
+
 namespace App\Tests\Controller;
 
+
+use App\DataFixtures\Test\NewsFixtures;
 use App\DataFixtures\Test\TagFixtures;
+use App\Entity\News;
 use App\Entity\Tag;
 use App\Tests\AbstractTestAction;
 use App\Tests\ParamWrapper;
+use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class TagControllerTest extends AbstractTestAction
+class NewsControllerTest extends AbstractTestAction
 {
-
-    public function testIndexTags()
+    public function testIndexNews()
     {
         $this->loadFixtures([
-            TagFixtures::class,
+            NewsFixtures::class,
         ]);
-        $this->client->request(Request::METHOD_GET, '/api/v1/tags');
+        $this->client->request(Request::METHOD_GET, '/api/v1/news');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertCount(TagFixtures::TAG_MAX, $this->getJsonResponse());
+        $this->assertCount(NewsFixtures::NEWS_MAX, $this->getJsonResponse());
     }
 
     /**
@@ -31,14 +35,14 @@ class TagControllerTest extends AbstractTestAction
     public function testShow(ParamWrapper $id)
     {
         $this->loadFixtures([
-            TagFixtures::class,
+            NewsFixtures::class,
         ]);
         $this->processParamWrapper($id);
 
-        $this->client->request(Request::METHOD_GET, '/api/v1/tags/' . $id);
+        $this->client->request(Request::METHOD_GET, '/api/v1/news/' . $id);
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        $this->client->request(Request::METHOD_GET, '/api/v1/tags/' . -1);
+        $this->client->request(Request::METHOD_GET, '/api/v1/news/' . -1);
         $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
     }
 
@@ -50,58 +54,73 @@ class TagControllerTest extends AbstractTestAction
     public function testDelete(ParamWrapper $id)
     {
         $this->loadFixtures([
-            TagFixtures::class,
+            NewsFixtures::class,
         ]);
         $this->processParamWrapper($id);
 
-        $this->client->request(Request::METHOD_DELETE, '/api/v1/tags/' . $id);
+        $this->client->request(Request::METHOD_DELETE, '/api/v1/news/' . $id);
         $this->assertEquals(Response::HTTP_NO_CONTENT, $this->client->getResponse()->getStatusCode());
 
-        $this->client->request(Request::METHOD_DELETE, '/api/v1/tags/' . -1);
+        $this->client->request(Request::METHOD_DELETE, '/api/v1/news/' . -1);
         $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
-    }
-
-
-    public function testNewTag()
-    {
-        $this->client->request(Request::METHOD_POST, '/api/v1/tags', [
-            'name' => 'NEW__TAG'
-        ]);
-        $this->assertEquals(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
-
-        $this->client->request(Request::METHOD_POST, '/api/v1/tags', [
-            'name' => ''
-        ]);
-        $this->assertEquals(Response::HTTP_UNPROCESSABLE_ENTITY, $this->client->getResponse()->getStatusCode());
     }
 
     /**
      * @param ParamWrapper $id
      *
-     * @dataProvider dataProvider
+     * @dataProvider dataProviderTag
      */
-    public function testUpdateTag(ParamWrapper $id)
+    public function testNewNews(ParamWrapper $id)
     {
         $this->loadFixtures([
             TagFixtures::class,
         ]);
+
         $this->processParamWrapper($id);
 
-        $this->client->request(Request::METHOD_PATCH, '/api/v1/tags/' . $id, [
-            'name' => 'NEW__TAG'
+        $this->client->request(Request::METHOD_POST, '/api/v1/news', [
+            'name' => 'NEW__name',
+            'shortDescription' => 'NEW__shortDescription',
+            'description' => 'NEW__description',
+            'active' => 1,
+            'tags' => [$id],
+        ]);
+        $this->assertEquals(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
+
+        $err = $this->client->request(Request::METHOD_POST, '/api/v1/news', [
+            'name' => '',
+        ]);
+        $this->assertEquals(Response::HTTP_UNPROCESSABLE_ENTITY, $this->client->getResponse()->getStatusCode());
+    }
+
+
+    /**
+     * @param ParamWrapper $id
+     * @dataProvider dataProvider
+     */
+    public function testUpdateNews(ParamWrapper $id)
+    {
+        $this->loadFixtures([
+            NewsFixtures::class,
+        ]);
+        $this->processParamWrapper($id);
+
+        $this->client->request(Request::METHOD_PATCH, '/api/v1/news/' . $id, [
+            'name' => 'NEW name',
         ]);
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        $this->client->request(Request::METHOD_PATCH, '/api/v1/tags/' . $id, [
-            'name' => ''
+        $this->client->request(Request::METHOD_PATCH, '/api/v1/news/' . $id, [
+            'name' => '',
         ]);
         $this->assertEquals(Response::HTTP_UNPROCESSABLE_ENTITY, $this->client->getResponse()->getStatusCode());
 
-        $this->client->request(Request::METHOD_PATCH, '/api/v1/tags/' . -1, [
-            'name' => 'NEW__TAG'
+        $this->client->request(Request::METHOD_PATCH, '/api/v1/news/' . -1, [
+            'name' => 'NEW name',
         ]);
         $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
     }
+
 
     /**
      * @return array
@@ -110,9 +129,20 @@ class TagControllerTest extends AbstractTestAction
     {
         return [
             [
-                new ParamWrapper(Tag::class, ['name' => '1_TAG_1'])
+                new ParamWrapper(News::class, ['name' => 'News number__1'])
             ],
         ];
     }
 
+    /**
+     * @return array
+     */
+    public function dataProviderTag(): array
+    {
+        return [
+            [
+                new ParamWrapper(Tag::class, ['name' => '1_TAG_1'])
+            ],
+        ];
+    }
 }

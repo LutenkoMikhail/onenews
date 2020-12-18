@@ -1,14 +1,15 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\DataFixtures\Demo;
 
 use App\Entity\News;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class NewsFixtures extends Fixture implements DependentFixtureInterface
+class NewsFixtures extends Fixture implements FixtureGroupInterface,DependentFixtureInterface
 {
 
     public function load(ObjectManager $manager)
@@ -33,4 +34,9 @@ class NewsFixtures extends Fixture implements DependentFixtureInterface
     {
         return [TagFixtures::class];
     }
+    public static function getGroups(): array
+    {
+        return ['demo'];
+    }
 }
+

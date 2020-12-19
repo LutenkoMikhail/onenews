@@ -95,22 +95,25 @@ class NewsControllerTest extends AbstractTestAction
 
 
     /**
-     * @param ParamWrapper $id
-     * @dataProvider dataProvider
+     * @param ParamWrapper $idNews
+     * @param ParamWrapper $idTag
+     * @dataProvider dataProviderNewsAndTag
      */
-    public function testUpdateNews(ParamWrapper $id)
+    public function testUpdateNews(ParamWrapper $idNews, ParamWrapper $idTag)
     {
         $this->loadFixtures([
             NewsFixtures::class,
         ]);
-        $this->processParamWrapper($id);
+        $this->processParamWrapper($idNews);
+        $this->processParamWrapper($idTag);
 
-        $this->client->request(Request::METHOD_PATCH, '/api/v1/news/' . $id, [
+        $this->client->request(Request::METHOD_PATCH, '/api/v1/news/' . $idNews, [
             'name' => 'NEW name',
+            'tags' => [$idTag],
         ]);
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        $this->client->request(Request::METHOD_PATCH, '/api/v1/news/' . $id, [
+        $this->client->request(Request::METHOD_PATCH, '/api/v1/news/' . $idNews, [
             'name' => '',
         ]);
         $this->assertEquals(Response::HTTP_UNPROCESSABLE_ENTITY, $this->client->getResponse()->getStatusCode());
@@ -142,6 +145,19 @@ class NewsControllerTest extends AbstractTestAction
         return [
             [
                 new ParamWrapper(Tag::class, ['name' => '1_TAG_1'])
+            ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function dataProviderNewsAndTag(): array
+    {
+        return [
+            [
+                new ParamWrapper(News::class, ['name' => 'News number__3']),
+                new ParamWrapper(Tag::class, ['name' => '2_TAG_2'])
             ],
         ];
     }

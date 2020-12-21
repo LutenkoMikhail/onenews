@@ -16,6 +16,8 @@ class AbstractTestAction extends WebTestCase
 
     protected $client;
 
+    protected $url;
+
 
     protected function setUp(): void
     {

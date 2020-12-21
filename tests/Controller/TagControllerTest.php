@@ -115,15 +115,13 @@ class TagControllerTest extends AbstractTestAction
     }
 
     /**
-     * @param string $newName
+     * @param array $data
      * @param int $status
      * @dataProvider newDataProvider
      */
-    public function testNewTag(string $newName, int $status)
+    public function testNewTag(array $data, int $status)
     {
-        $this->client->request(Request::METHOD_POST, $this->url, [
-            'name' => $newName
-        ]);
+        $this->client->request(Request::METHOD_POST, $this->url, $data);
         $this->assertEquals($status, $this->client->getResponse()->getStatusCode());
 
     }
@@ -135,11 +133,15 @@ class TagControllerTest extends AbstractTestAction
     {
         return [
             [
-                'newName' => 'NEW__TAG',
+                [
+                    'name' => 'NEW__TAG'
+                ],
                 Response::HTTP_CREATED
             ],
             [
-                'newName' => '',
+                [
+                    'name' => ''
+                ],
                 Response::HTTP_UNPROCESSABLE_ENTITY
             ]
         ];
@@ -147,21 +149,19 @@ class TagControllerTest extends AbstractTestAction
 
     /**
      * @param $id
-     * @param string $newName
+     * @param array $data
      * @param int $status
      * @dataProvider updateDataProvider
      */
 
-    public function testUpdateTag($id, string $newName, int $status)
+    public function testUpdateTag($id, array $data, int $status)
     {
         $this->loadFixtures([
             TagFixtures::class,
         ]);
         $this->processParamWrapper($id);
 
-        $this->client->request(Request::METHOD_PATCH, $this->url . '/' . $id, [
-            'name' => $newName
-        ]);
+        $this->client->request(Request::METHOD_PATCH, $this->url . '/' . $id,$data);
         $this->assertEquals($status, $this->client->getResponse()->getStatusCode());
 
     }
@@ -174,21 +174,26 @@ class TagControllerTest extends AbstractTestAction
         return [
             [
                 new ParamWrapper(Tag::class, ['name' => '1_TAG_1']),
-                'newName' => 'NEW__TAG',
+                [
+                    'name' => 'UPDATE__TAG'
+                ],
                 Response::HTTP_OK
             ],
             [
                 new ParamWrapper(Tag::class, ['name' => '1_TAG_1']),
-                'newName' => '',
+                [
+                    'name' => ''
+                ],
                 Response::HTTP_UNPROCESSABLE_ENTITY
             ],
             [
                 -1,
-                'newName' => 'NEW__TAG',
+                [
+                    'name' => 'UPDATE__TAG'
+                ],
                 Response::HTTP_NOT_FOUND
             ]
         ];
     }
-
 }
 

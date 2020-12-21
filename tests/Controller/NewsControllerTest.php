@@ -120,19 +120,20 @@ class NewsControllerTest extends AbstractTestAction
     }
 
     /**
-     * @param array $newNews
+     * @param array $data
      * @param int $status
      * @dataProvider newDataProvider
      */
 
-    public function testNewNews(array $newNews, int $status)
+    public function testNewNews(array $data, int $status)
     {
         $this->loadFixtures([
             TagFixtures::class,
         ]);
 
-        $this->processParamWrapper($newNews['tags']['id']);
-        $this->client->request(Request::METHOD_POST, $this->url, $newNews);
+        $this->processParamWrappers($data);
+
+        $this->client->request(Request::METHOD_POST, $this->url, $data);
         $this->assertEquals($status, $this->client->getResponse()->getStatusCode());
 
     }
@@ -144,25 +145,24 @@ class NewsControllerTest extends AbstractTestAction
     {
         return [
             [
-                'newNews' => [
+                [
                     'name' => 'NEW__name',
                     'shortDescription' => 'NEW__shortDescription',
                     'description' => 'NEW__description',
                     'active' => 1,
                     'tags' => [
-                        'id' => new ParamWrapper(Tag::class, ['name' => '1_TAG_1'])
+                        new ParamWrapper(Tag::class, ['name' => '1_TAG_1'])
                     ]
                 ],
                 Response::HTTP_CREATED
             ],
             [
-                'newNews' => [
+                [
                     'name' => '',
                     'shortDescription' => '',
                     'description' => '',
-                    'active' => 1,
                     'tags' => [
-                        'id' => new ParamWrapper(Tag::class, ['name' => '1_TAG_1'])
+                        new ParamWrapper(Tag::class, ['name' => '1_TAG_1'])
                     ]
                 ],
                 Response::HTTP_UNPROCESSABLE_ENTITY
@@ -172,20 +172,20 @@ class NewsControllerTest extends AbstractTestAction
 
     /**
      * @param  $id
-     * @param array $updateNews
+     * @param array $data
      * @param int $status
      * @dataProvider updateDataProvider
      */
 
-    public function testUpdateNews($id, array $updateNews, int $status)
+    public function testUpdateNews($id, array $data, int $status)
     {
         $this->loadFixtures([
             NewsFixtures::class,
         ]);
         $this->processParamWrapper($id);
-        $this->processParamWrapper($updateNews['tags']['id']);
+        $this->processParamWrappers($data);
 
-        $this->client->request(Request::METHOD_PATCH, $this->url . '/' . $id, $updateNews);
+        $this->client->request(Request::METHOD_PATCH, $this->url . '/' . $id, $data);
         $this->assertEquals($status, $this->client->getResponse()->getStatusCode());
 
     }
@@ -198,39 +198,39 @@ class NewsControllerTest extends AbstractTestAction
         return [
             [
                 new ParamWrapper(News::class, ['name' => 'News number__3']),
-                'updateNews' => [
+                [
                     'name' => 'updateNews',
                     'shortDescription' => 'updateNews',
                     'description' => 'updateNews',
                     'active' => 1,
                     'tags' => [
-                        'id' => new ParamWrapper(Tag::class, ['name' => '2_TAG_2'])
+                        new ParamWrapper(Tag::class, ['name' => '2_TAG_2'])
                     ]
                 ],
                 Response::HTTP_OK
             ],
             [
                 new ParamWrapper(News::class, ['name' => 'News number__3']),
-                'updateNews' => [
+                [
                     'name' => '',
                     'shortDescription' => '',
                     'description' => '',
                     'active' => 1,
                     'tags' => [
-                        'id' => new ParamWrapper(Tag::class, ['name' => '2_TAG_2'])
+                        new ParamWrapper(Tag::class, ['name' => '2_TAG_2'])
                     ]
                 ],
                 Response::HTTP_UNPROCESSABLE_ENTITY
             ],
             [
                 -1,
-                'updateNews' => [
+                [
                     'name' => 'updateNews',
                     'shortDescription' => 'updateNews',
                     'description' => 'updateNews',
                     'active' => 1,
                     'tags' => [
-                        'id' => new ParamWrapper(Tag::class, ['name' => '2_TAG_2'])
+                        new ParamWrapper(Tag::class, ['name' => '2_TAG_2'])
                     ]
                 ],
                 Response::HTTP_NOT_FOUND

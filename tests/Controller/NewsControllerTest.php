@@ -21,19 +21,18 @@ class NewsControllerTest extends AbstractTestAction
     protected $url = '/api/v1/news';
 
     /**
-     * @param int $statusOk
+     * @param int $status
      * @param int $newsMax
-     * @param string $requestMethod
      * @dataProvider IndexDataProvider
      */
-    public function testIndexNews(int $statusOk, int $newsMax, string $requestMethod)
+    public function testIndexNews(int $status, int $newsMax)
     {
         $this->loadFixtures([
             NewsFixtures::class,
         ]);
-        $this->client->request($requestMethod, $this->url);
+        $this->client->request(Request::METHOD_GET, $this->url);
 
-        $this->assertEquals($statusOk, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals($status, $this->client->getResponse()->getStatusCode());
         $this->assertCount($newsMax, $this->getJsonResponse());
     }
 
@@ -46,33 +45,26 @@ class NewsControllerTest extends AbstractTestAction
         return [
             [
                 Response::HTTP_OK,
-                NewsFixtures::NEWS_MAX,
-                Request::METHOD_GET
-            ],
+                NewsFixtures::NEWS_MAX
+            ]
         ];
     }
 
     /**
-     * @param ParamWrapper $id
-     * @param int $statusOk
-     * @param int $notFound
-     * @param string $requestMethod
-     * @param int $wrongEntry
+     * @param  $id
+     * @param int $status
      * @dataProvider showDataProvider
      */
 
-    public function testShow(ParamWrapper $id, int $statusOk, int $notFound, string $requestMethod, int $wrongEntry)
+    public function testShow($id, int $status)
     {
         $this->loadFixtures([
             NewsFixtures::class,
         ]);
         $this->processParamWrapper($id);
 
-        $this->client->request($requestMethod, $this->url . '/' . $id);
-        $this->assertEquals($statusOk, $this->client->getResponse()->getStatusCode());
-
-        $this->client->request($requestMethod, $this->url . '/' . $wrongEntry);
-        $this->assertEquals($notFound, $this->client->getResponse()->getStatusCode());
+        $this->client->request(Request::METHOD_GET, $this->url . '/' . $id);
+        $this->assertEquals($status, $this->client->getResponse()->getStatusCode());
     }
 
     /**
@@ -83,35 +75,31 @@ class NewsControllerTest extends AbstractTestAction
         return [
             [
                 new ParamWrapper(News::class, ['name' => 'News number__1']),
-                Response::HTTP_OK,
-                Response::HTTP_NOT_FOUND,
-                Request::METHOD_GET,
-                'wrongEntry' => -1
+                Response::HTTP_OK
             ],
+            [
+                -1,
+                Response::HTTP_NOT_FOUND
+            ]
         ];
     }
 
     /**
-     * @param ParamWrapper $id
-     * @param int $noContent
-     * @param int $notFound
-     * @param string $requestMethod
-     * @param int $wrongEntry
+     * @param  $id
+     * @param int $status
      * @dataProvider deleteDataProvider
      */
 
-    public function testDelete(ParamWrapper $id, int $noContent, int $notFound, string $requestMethod, int $wrongEntry)
+    public function testDelete($id, int $status)
     {
         $this->loadFixtures([
             NewsFixtures::class,
         ]);
         $this->processParamWrapper($id);
 
-        $this->client->request($requestMethod, $this->url . '/' . $id);
-        $this->assertEquals($noContent, $this->client->getResponse()->getStatusCode());
+        $this->client->request(Request::METHOD_DELETE, $this->url . '/' . $id);
+        $this->assertEquals($status, $this->client->getResponse()->getStatusCode());
 
-        $this->client->request($requestMethod, $this->url . '/' . $wrongEntry);
-        $this->assertEquals($notFound, $this->client->getResponse()->getStatusCode());
     }
 
     /**
@@ -122,38 +110,31 @@ class NewsControllerTest extends AbstractTestAction
         return [
             [
                 new ParamWrapper(News::class, ['name' => 'News number__1']),
-                Response::HTTP_NO_CONTENT,
-                Response::HTTP_NOT_FOUND,
-                Request::METHOD_DELETE,
-                'wrongEntry' => -1
+                Response::HTTP_NO_CONTENT
             ],
+            [
+                -1,
+                Response::HTTP_NOT_FOUND
+            ]
         ];
     }
 
     /**
-     * @param ParamWrapper $id
      * @param array $newNews
-     * @param array $badNews
-     * @param int $created
-     * @param int $noCreated
-     * @param string $requestMethod
+     * @param int $status
      * @dataProvider newDataProvider
      */
 
-    public function testNewNews(ParamWrapper $id, array $newNews, array $badNews, int $created, int $noCreated, string $requestMethod)
+    public function testNewNews(array $newNews, int $status)
     {
         $this->loadFixtures([
             TagFixtures::class,
         ]);
 
-        $this->processParamWrapper($id);
-        $newNews['tags'] = [$id];
+        $this->processParamWrapper($newNews['tags']['id']);
+        $this->client->request(Request::METHOD_POST, $this->url, $newNews);
+        $this->assertEquals($status, $this->client->getResponse()->getStatusCode());
 
-        $this->client->request($requestMethod, $this->url, $newNews);
-        $this->assertEquals($created, $this->client->getResponse()->getStatusCode());
-
-        $err = $this->client->request($requestMethod, $this->url, $badNews);
-        $this->assertEquals($noCreated, $this->client->getResponse()->getStatusCode());
     }
 
     /**
@@ -163,54 +144,50 @@ class NewsControllerTest extends AbstractTestAction
     {
         return [
             [
-                new ParamWrapper(Tag::class, ['name' => '1_TAG_1']),
                 'newNews' => [
                     'name' => 'NEW__name',
                     'shortDescription' => 'NEW__shortDescription',
                     'description' => 'NEW__description',
                     'active' => 1,
-                    'tags' => 0
+                    'tags' => [
+                        'id' => new ParamWrapper(Tag::class, ['name' => '1_TAG_1'])
+                    ]
                 ],
-                'badNews' => [
-                    'name' => ''
+                Response::HTTP_CREATED
+            ],
+            [
+                'newNews' => [
+                    'name' => '',
+                    'shortDescription' => '',
+                    'description' => '',
+                    'active' => 1,
+                    'tags' => [
+                        'id' => new ParamWrapper(Tag::class, ['name' => '1_TAG_1'])
+                    ]
                 ],
-                Response::HTTP_CREATED,
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Request::METHOD_POST
+                Response::HTTP_UNPROCESSABLE_ENTITY
             ],
         ];
     }
 
     /**
-     * @param ParamWrapper $idNews
-     * @param ParamWrapper $idTag
-     * @param array $upDateNews
-     * @param array $badNews
-     * @param int $update
-     * @param int $noUpdate
-     * @param int $notFound
-     * @param string $requestMethod
-     * @param int $wrongEntry
+     * @param  $id
+     * @param array $updateNews
+     * @param int $status
      * @dataProvider updateDataProvider
      */
 
-    public function testUpdateNews(ParamWrapper $idNews, ParamWrapper $idTag, array $upDateNews, array $badNews, int $update, int $noUpdate, int $notFound, string $requestMethod, int $wrongEntry)
+    public function testUpdateNews($id, array $updateNews, int $status)
     {
         $this->loadFixtures([
             NewsFixtures::class,
         ]);
-        $this->processParamWrapper($idNews);
-        $this->processParamWrapper($idTag);
-        $upDateNews['tags'] = [$idTag];
+        $this->processParamWrapper($id);
+        $this->processParamWrapper($updateNews['tags']['id']);
 
-        $this->client->request($requestMethod, $this->url . '/' . $idNews, $upDateNews);
-        $this->assertEquals($update, $this->client->getResponse()->getStatusCode());
+        $this->client->request(Request::METHOD_PATCH, $this->url . '/' . $id, $updateNews);
+        $this->assertEquals($status, $this->client->getResponse()->getStatusCode());
 
-        $this->client->request($requestMethod, $this->url . '/' . $idNews, $badNews);
-        $this->assertEquals($noUpdate, $this->client->getResponse()->getStatusCode());
-
-        $this->client->request($requestMethod, $this->url . '/' . $wrongEntry, $upDateNews);
-        $this->assertEquals($notFound, $this->client->getResponse()->getStatusCode());
     }
 
     /**
@@ -221,23 +198,44 @@ class NewsControllerTest extends AbstractTestAction
         return [
             [
                 new ParamWrapper(News::class, ['name' => 'News number__3']),
-                new ParamWrapper(Tag::class, ['name' => '2_TAG_2']),
-                'upDateNews' => [
-                    'name' => 'upDateNews',
-                    'shortDescription' => 'upDateNews',
-                    'description' => 'upDateNews',
+                'updateNews' => [
+                    'name' => 'updateNews',
+                    'shortDescription' => 'updateNews',
+                    'description' => 'updateNews',
                     'active' => 1,
-                    'tags' => 0
+                    'tags' => [
+                        'id' => new ParamWrapper(Tag::class, ['name' => '2_TAG_2'])
+                    ]
                 ],
-                'badNews' => [
-                    'name' => ''
-                ],
-                Response::HTTP_OK,
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                Response::HTTP_NOT_FOUND,
-                Request::METHOD_PATCH,
-                'wrongEntry' => -1
+                Response::HTTP_OK
             ],
+            [
+                new ParamWrapper(News::class, ['name' => 'News number__3']),
+                'updateNews' => [
+                    'name' => '',
+                    'shortDescription' => '',
+                    'description' => '',
+                    'active' => 1,
+                    'tags' => [
+                        'id' => new ParamWrapper(Tag::class, ['name' => '2_TAG_2'])
+                    ]
+                ],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            ],
+            [
+                -1,
+                'updateNews' => [
+                    'name' => 'updateNews',
+                    'shortDescription' => 'updateNews',
+                    'description' => 'updateNews',
+                    'active' => 1,
+                    'tags' => [
+                        'id' => new ParamWrapper(Tag::class, ['name' => '2_TAG_2'])
+                    ]
+                ],
+                Response::HTTP_NOT_FOUND
+            ]
         ];
     }
 }
+

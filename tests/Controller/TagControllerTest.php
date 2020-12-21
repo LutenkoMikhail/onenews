@@ -17,9 +17,9 @@ class TagControllerTest extends AbstractTestAction
     /**
      * @param int $status
      * @param int $tagsMax
-     * @dataProvider IndexDataProvider
+     * @dataProvider listDataProvider
      */
-    public function testIndexTags(int $status, int $tagsMax)
+    public function testList(int $status, int $tagsMax)
     {
         $this->loadFixtures([
             TagFixtures::class,
@@ -33,7 +33,7 @@ class TagControllerTest extends AbstractTestAction
     /**
      * @return array
      */
-    public function indexDataProvider(): array
+    public function listDataProvider(): array
     {
         return [
             [
@@ -46,10 +46,10 @@ class TagControllerTest extends AbstractTestAction
     /**
      * @param  $id
      * @param int $status
-     * @dataProvider showDataProvider
+     * @dataProvider fetchDataProvider
      */
 
-    public function testShow($id, int $status)
+    public function testFetch($id, int $status)
     {
         $this->loadFixtures([
             TagFixtures::class,
@@ -65,7 +65,7 @@ class TagControllerTest extends AbstractTestAction
     /**
      * @return array
      */
-    public function showDataProvider(): array
+    public function fetchDataProvider(): array
     {
         return [
             [
@@ -117,9 +117,9 @@ class TagControllerTest extends AbstractTestAction
     /**
      * @param array $data
      * @param int $status
-     * @dataProvider newDataProvider
+     * @dataProvider createDataProvider
      */
-    public function testNewTag(array $data, int $status)
+    public function testCreate(array $data, int $status)
     {
         $this->client->request(Request::METHOD_POST, $this->url, $data);
         $this->assertEquals($status, $this->client->getResponse()->getStatusCode());
@@ -129,7 +129,7 @@ class TagControllerTest extends AbstractTestAction
     /**
      * @return array
      */
-    public function newDataProvider(): array
+    public function createDataProvider(): array
     {
         return [
             [
@@ -154,7 +154,7 @@ class TagControllerTest extends AbstractTestAction
      * @dataProvider updateDataProvider
      */
 
-    public function testUpdateTag($id, array $data, int $status)
+    public function  testUpdate($id, array $data, int $status)
     {
         $this->loadFixtures([
             TagFixtures::class,

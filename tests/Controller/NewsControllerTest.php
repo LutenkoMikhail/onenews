@@ -23,9 +23,9 @@ class NewsControllerTest extends AbstractTestAction
     /**
      * @param int $status
      * @param int $newsMax
-     * @dataProvider IndexDataProvider
+     * @dataProvider listDataProvider
      */
-    public function testIndexNews(int $status, int $newsMax)
+    public function testList(int $status, int $newsMax)
     {
         $this->loadFixtures([
             NewsFixtures::class,
@@ -40,7 +40,7 @@ class NewsControllerTest extends AbstractTestAction
     /**
      * @return array
      */
-    public function indexDataProvider(): array
+    public function listDataProvider(): array
     {
         return [
             [
@@ -53,10 +53,10 @@ class NewsControllerTest extends AbstractTestAction
     /**
      * @param  $id
      * @param int $status
-     * @dataProvider showDataProvider
+     * @dataProvider fetchDataProvider
      */
 
-    public function testShow($id, int $status)
+    public function testFetch($id, int $status)
     {
         $this->loadFixtures([
             NewsFixtures::class,
@@ -70,7 +70,7 @@ class NewsControllerTest extends AbstractTestAction
     /**
      * @return array
      */
-    public function showDataProvider(): array
+    public function fetchDataProvider(): array
     {
         return [
             [
@@ -122,10 +122,10 @@ class NewsControllerTest extends AbstractTestAction
     /**
      * @param array $data
      * @param int $status
-     * @dataProvider newDataProvider
+     * @dataProvider createDataProvider
      */
 
-    public function testNewNews(array $data, int $status)
+    public function testCreate(array $data, int $status)
     {
         $this->loadFixtures([
             TagFixtures::class,
@@ -141,7 +141,7 @@ class NewsControllerTest extends AbstractTestAction
     /**
      * @return array
      */
-    public function newDataProvider(): array
+    public function createDataProvider(): array
     {
         return [
             [
@@ -177,7 +177,7 @@ class NewsControllerTest extends AbstractTestAction
      * @dataProvider updateDataProvider
      */
 
-    public function testUpdateNews($id, array $data, int $status)
+    public function  testUpdate($id, array $data, int $status)
     {
         $this->loadFixtures([
             NewsFixtures::class,

@@ -1,12 +1,13 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\DataFixtures\Demo;
 
 use App\Entity\Tag;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class TagFixtures extends Fixture
+class TagFixtures extends Fixture implements FixtureGroupInterface
 {
     public const TAG_REFERENCE = 'tag_alias_';
     public const TAG_MAX = 5;
@@ -21,4 +22,9 @@ class TagFixtures extends Fixture
         }
         $manager->flush();
     }
+    public static function getGroups(): array
+    {
+        return ['demo'];
+    }
 }
+

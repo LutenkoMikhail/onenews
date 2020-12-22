@@ -1,20 +1,22 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\DataFixtures\Test;
 
 use App\Entity\News;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class NewsFixtures extends Fixture implements DependentFixtureInterface
+class NewsFixtures extends Fixture implements FixtureGroupInterface,DependentFixtureInterface
 {
+    public const NEWS_MAX = 3;
 
     public function load(ObjectManager $manager)
     {
 
-        for ($i = 1; $i <= 3; $i++) {
+        for ($i = 1; $i <= self::NEWS_MAX; $i++) {
             $news = new News();
             $news->setName('News number__' . $i);
             $news->setDescription('News description__' . $i);
@@ -33,4 +35,9 @@ class NewsFixtures extends Fixture implements DependentFixtureInterface
     {
         return [TagFixtures::class];
     }
+    public static function getGroups(): array
+    {
+        return ['test'];
+    }
 }
+

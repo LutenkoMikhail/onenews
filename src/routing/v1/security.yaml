@@ -1,0 +1,8 @@
+api_login:
+  path: /login
+  controller: App\Controller\SecurityController::login
+  methods: POST
+api_logout:
+  path: /logout
+  controller: App\Controller\SecurityController::logout
+  methods: POST

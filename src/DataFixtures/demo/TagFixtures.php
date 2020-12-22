@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataFixtures\Demo;
+namespace App\DataFixtures\demo;
 
 use App\Entity\Tag;
 use Doctrine\Bundle\FixturesBundle\Fixture;
